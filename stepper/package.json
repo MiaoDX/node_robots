@@ -1,0 +1,15 @@
+{
+  "name": "stepper",
+  "version": "1.0.0",
+  "description": "use johnny-five to control the steppers",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "miaodx@hotmail.com",
+  "license": "MIT",
+  "devDependencies": {
+    "johnny-five": "^0.10.6",
+    "lodash": "^4.17.4"
+  }
+}
