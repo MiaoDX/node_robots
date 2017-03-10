@@ -1,0 +1,21 @@
+{
+  "name": "mega2560_pins",
+  "version": "1.0.0",
+  "description": "show mega2560 pin status with echart, get states via socket.io",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mega2560",
+    "states"
+  ],
+  "author": "miaodx@hotmail.com",
+  "license": "MIT",
+  "dependencies": {
+    "echarts": "^3.4.0"
+  },
+  "devDependencies": {
+    "lodash": "^4.17.4"
+  }
+}
