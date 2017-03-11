@@ -35,7 +35,7 @@ board.on("ready", function() {
   console.log("Ready!");
 
 
-  var pins_num = [2,3,4,5,6,7,8,9];
+  var pins_num = [2,2,2,3]; // We even can access to same pin more than once!! Pretty useful since we may want to listen to this pin value change while doing other stuff.
   var pins = [];
   
   pins_num.forEach(num => {

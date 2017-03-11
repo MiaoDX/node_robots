@@ -7,9 +7,14 @@
 Try to use babel and make a cleaner way to promisify the functions.
 $ babel src/board-asyncawait-babel.js -o dist/board-asyncawait-babel.js
 $ node dist/board-asyncawait-babel.js
+
+OR JUST EMBRACE `async` with nodejs 7.x
+
+$ node --harmony src/board-asyncawait-babel.js // notice the difference that we do not need `babel` to translate the js file.
+
 */
 
-require("babel-core/register");
+require("babel-core/register"); // when use nodejs 7.x and `--harmony` switch, we do need to include this.
 var Promise = require("bluebird");
 
 var five = Promise.promisifyAll(require("johnny-five"));
