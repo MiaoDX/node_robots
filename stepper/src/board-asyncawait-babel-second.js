@@ -32,7 +32,6 @@ board.on("ready", function() {
         console.log(err.message);
     }
 
-
   });
 
 }); // board

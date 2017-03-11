@@ -8,17 +8,27 @@
 
 class StepperDecorated {
     constructor(stepper, enable_pin, stop_pin_1, stop_pin_2) {
+        console.log('Prepare to construct the decorated stepper');
         this.stepper = stepper;
         this.enable_pin = enable_pin;
         this.stop_pin_1 = stop_pin_1;
         this.stop_pin_2 = stop_pin_2;
+        console.log('Construct the decorated stepper done, info');
     }
 
     stop() {
+        let that = this;
         console.log("Move to the board, just stop!");
-        this.enable_pin.low();
+        // that.enable_pin.low();
+        that.enable_pin.write(0);
+        that.enable_pin.write(0);
+        that.enable_pin.write(0);
+        that.enable_pin.write(0);
         // this.stepper.pins.dir.low();
         // this.stepper.pins.step.low();
+        that.enable_pin.read(function(error, value) {
+            console.log('now enable pin ', that.enable_pin.addr, ' value is:', value);
+        });
     }
 
     start() {

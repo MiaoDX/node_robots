@@ -1,4 +1,6 @@
-var five = require("johnny-five");
+// var five = require("johnny-five");
+var Promise = require("bluebird");
+var five = Promise.promisifyAll(require("johnny-five"));
 var StepperDecorated = require("./stepper_decorate");
 
 
@@ -36,7 +38,7 @@ new five.Board().on("ready", function() {
     mode: five.Pin.INPUT
   });
 
-  const enable_pin = new five.Pin({
+  var enable_pin = new five.Pin({
     pin: 30,
     type: "digital",
     mode: five.Pin.OUTPUT
@@ -52,17 +54,35 @@ new five.Board().on("ready", function() {
   });  
 
 
+
   const stepper_decorate_1 = new StepperDecorated(stepper_1, enable_pin, stop_pin_1, stop_pin_2);
 
-  test_move_pin.on("high", function() {
+  test_move_pin.on("high", async function() {
     console.log("Test move is high, prepare to move!!");
-    stepper_decorate_1.move(500);
+    var value = await enable_pin.readAsync();
+    console.log('now enable_pin value: ', value);
+    let flag = await enable_pin.writeAsync(1);
+    console.log('how about the flag?:', flag);
+    value = await enable_pin.readAsync();
+    console.log('now enable_pin value: ', value);
+    stepper_decorate_1.move(20000);
   });
 
 
-  stop_pin_1.on("high", function() {
+  stop_pin_1.on("high",async function() {
     console.log("Stop pin is high, Just stop!!");
-    stepper_decorate_1.stop();
+    // stepper_decorate_1.stop();
+    try {
+      // await enable_pin.writeAsync(0);
+      let low_flag = await enable_pin.low();
+      console.log('how about the low_flag?:', low_flag);
+      // enable_pin.write(0);
+      let value = await enable_pin.readAsync();
+      console.log('now enable_pin value: ', value);
+    } catch (error) {
+      console.log('ERROR ', error);
+    }
+    console.log("Stop Done!!");
   });
 
 });
