@@ -6,11 +6,15 @@ There are there sub-projects in this repo(by far!), I will give a brief descript
 
 ### promisify-johnny-five
 
+[WITH QUESTIONS]
+
 Promisify `johnny-five` lib and use `async` and `await` to avoid callbacks and make code more readable.
 
 Reading value of one or more than one at the same time is used to demonstrate.
 
 ### mega2560_pins
+
+[NOT DONE]
 
 I still remember last year almost the same time, I was also assigned to make the 6-dof camera platform better(funny enough, the better can always be true, better than last better). Anyway at that time when play with Raspberry Pi, I found a splendid lib to show the states of GPIO pins of Pi -- [`WebIOPi`](http://webiopi.trouch.com/), and I failed to find a corresponding lib or script for Arduino(Mega2560)(Chances are that I missed when searching github). So how do you think of this one:
 
@@ -19,5 +23,7 @@ I still remember last year almost the same time, I was also assigned to make the
 Personally, I pretty enjoy the UI.(Thanks give to [`echarts`]http://echarts.baidu.com/).
 
 ### stepper
+
+[TODO]
 
 At the time of writing, stepper 2.x have not been implemented on the firmware...
