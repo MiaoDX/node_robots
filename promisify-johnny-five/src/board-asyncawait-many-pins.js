@@ -17,7 +17,7 @@ var board = new five.Board({
 
 const get_pin_value = async (function (pin_num) {
   return await (pin_num.readAsync());
-})
+});
 
 const get_pins_value = function (pins) {
     pins_value_promise = [];

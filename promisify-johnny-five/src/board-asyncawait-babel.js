@@ -22,9 +22,9 @@ var five = Promise.promisifyAll(require("johnny-five"));
 var board = new five.Board({
 });
 
-var get_pin_value = (async function (pin_num) {
-  return await (pin_num.readAsync());
-})
+var get_pin_value = async function (pin_num) {
+  return await pin_num.readAsync();
+};
 
 
 board.on("ready", function() {
