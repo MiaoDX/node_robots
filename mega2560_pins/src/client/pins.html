@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <script src="../../node_modules/echarts/dist/echarts.min.js"></script>
+    
+    <script src="../../node_modules/lodash/lodash.js"></script>
+
+    <script src="../../node_modules/socket.io-client/dist/socket.io.js"></script>
+
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="width: 1500px;height:700px;"></div>
+
+    <script src="./pins.js"></script>
+
+    <script type="text/javascript">
+
+        var socket = io('http://localhost:8080');
+        
+        // // receive server confirm
+        // socket.on('open',function(){
+        //     console.log('Should be here');
+        // });
+        
+        socket.on('pin_value_change', function(pin_value_change){
+            console.log('got from server, ', pin_value_change);
+            setNewOption(pin_value_change);
+        })
+
+    </script>
+</body>
+</html>

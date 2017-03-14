@@ -14,7 +14,7 @@ Reading value of one or more than one at the same time is used to demonstrate.
 
 ### mega2560_pins
 
-[NOT DONE]
+[Need examples]
 
 I still remember last year almost the same time, I was also assigned to make the 6-dof camera platform better(funny enough, the better can always be true, better than last better). Anyway at that time when play with Raspberry Pi, I found a splendid lib to show the states of GPIO pins of Pi -- [`WebIOPi`](http://webiopi.trouch.com/), and I failed to find a corresponding lib or script for Arduino(Mega2560)(Chances are that I missed when searching github). So how do you think of this one:
 

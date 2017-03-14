@@ -4,7 +4,8 @@
   "description": "show mega2560 pin status with echart, get states via socket.io",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/app.js"
   },
   "keywords": [
     "mega2560",
@@ -12,11 +13,10 @@
   ],
   "author": "miaodx@hotmail.com",
   "license": "MIT",
-  "dependencies": {
-    "echarts": "^3.4.0"
-  },
   "devDependencies": {
-    "cheerio": "^0.22.0",
-    "lodash": "^4.17.4"
+    "echarts": "^3.4.0",
+    "johnny-five": "^0.10.6",
+    "lodash": "^4.17.4",
+    "socket.io": "^1.7.3"
   }
 }
