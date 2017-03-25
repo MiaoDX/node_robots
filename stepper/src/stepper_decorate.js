@@ -22,16 +22,27 @@ class StepperDecorated {
     /**
      * set enable_pin high to release the stepper, while, it's the case
      * See, [RAMPS 1.4 test code in RAMPS_1.4 wiki](http://reprap.org/wiki/RAMPS_1.4)
+     *
+     * 
+     * The boundary case is stepper stopped by LIMIT but we resend a move command, just failed to action.
+     * So, the stop should be move 1 step and back 1 step. [SURELY UGLY]
      */
     stop(emitter_status = stepper_status.NORMAL_STOP) { // default status is NORMAL_STOP
-        console.log("STOP BY STATUS: ", emitter_status);
-        this.status = emitter_status;
-        this.enable_pin.high(); 
+        var that = this;
+        console.log("STOP BY STATUS: ", emitter_status.key);
+        that.status = emitter_status;
+
+        that.stepper.rpm(180).ccw().step(1, function() {
+            that.stepper.cw().step(1, function() {
+                console.log("Done moving CCW AND CW to make a stop");
+                that.enable_pin.high();
+            });
+        });
     }
 
     trigger_stop_by_limit(stop_pin_num) {
         console.log("STOP BY LIMIT, STOP_PIN: ", stop_pin_num);
-        this.status_emitter.emit('stop_emitter', stepper_status.LIMIT_STOP);
+        this.status_emitter.emit('limit_stop_emitter');
     }
 
     start() {
@@ -51,30 +62,28 @@ class StepperDecorated {
         });
     }
 
+
     async async_move(steps) {
-        this.start(); // start first
+        var that = this;
+        let status = await this.promise_move_resolve_status(steps);
+        that.stop(status);
+        console.log("Done moving, now status: ", that.status.key);
+        return status;
+    };
 
-        var direction = steps >= 0?1:0;
-        steps = Math.abs(steps);
-
-        this.stepper.rpm(180).direction(direction).accel(1000).decel(1000).step(steps, function() {
-
+    promise_move(steps) {
+        var that = this;
+        return new Promise((resolve, reject) => {
+            this.promise_move_resolve_status(steps)
+            .then(status => {
+                that.stop(status);
+                resolve(status);
+            });
         });
-
-        let move_result = await this.stepper.rpm(180).direction(direction).accel(1000).decel(1000).stepAsync(steps);
-
-        console.log('I am curious about the result: ', move_result);
-        console.log("Done moving");
-        this.stop();
-    }
-
-    // async try_async_f (pin_num) {
-    //     return await this.promise_hello();
-    // };
+    };
 
 
-
-    promise_move(steps){
+    promise_move_resolve_status(steps) {
         var that = this;
         
         that.start(); // start first
@@ -84,21 +93,16 @@ class StepperDecorated {
         return new Promise((resolve, reject) => {
             this.stepper.rpm(180).direction(direction).accel(1000).decel(1000).step(steps, function() {
                 // this.normal_stop(); // chances are that this will stop stepper at a unsure time, so stop when status_emitter triggered
-                that.status_emitter.emit('stop_emitter', stepper_status.NORMAL_STOP);
+                resolve(stepper_status.NORMAL_STOP);
             });
 
-            //emitter can also be triggered by stop_pins
-            that.status_emitter.once('stop_emitter', emitter_status => {
-                that.stop(emitter_status);
-                console.log("Done moving, now status: ", that.status.key);
-                resolve(that.status);
+            //emitter can only be triggered by limit
+            that.status_emitter.once('limit_stop_emitter', () => {
+                resolve(stepper_status.LIMIT_STOP);
             });
 
         });
     };
-
-
-
 
 }
 

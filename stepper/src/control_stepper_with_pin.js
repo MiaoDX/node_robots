@@ -61,22 +61,24 @@ new five.Board().on("ready", function() {
     
     // stepper_decorate_1.move(20000);
     
-    // await stepper_decorate_1.async_move(20000);
+    let status = await stepper_decorate_1.async_move(20000);
+    console.log("We got status: ", status);
     
-    stepper_decorate_1.promise_move(20000)
-    .then(status => {
-      console.log("We got status: ", status);
-    })
-    .catch(e => {
-      console.log("Something wrong, ", e);
-    })
+    // stepper_decorate_1.promise_move(4000)
+    // .then(status => {
+    //   console.log("We got status: ", status);
+    // })
+    // .catch(e => {
+    //   console.log("Something wrong, ", e);
+    // })
+
   });
 
 
   // pin 5
   stop_pin_1.on("high", function() {
     console.log("Stop pin is high, Just stop!!");
-    stepper_decorate_1.stop(stop_pin_1.pin);
+    stepper_decorate_1.stop();
     console.log("Stop Done!!");
   });
 
