@@ -12,5 +12,8 @@
     "bluebird": "^3.5.0",
     "johnny-five": "^0.10.6",
     "lodash": "^4.17.4"
+  },
+  "dependencies": {
+    "bunyan": "^1.8.9"
   }
 }

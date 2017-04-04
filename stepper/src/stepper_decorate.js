@@ -2,9 +2,20 @@ var Enum = require('enum');
 var events = require('events'); 
 let stepper_status = new Enum(['RUNNING', 'NORMAL_STOP', 'LIMIT_STOP']);
 
+var bunyan = require('bunyan');
+var log = bunyan.createLogger({
+  name: 'stepper_decorate.js',
+  streams: [
+    { stream: process.stdout },
+    { path: 'stepper.log'}
+  ]
+});
+
+
+
 class StepperDecorated {
     constructor(stepper, enable_pin, stop_pin_1, stop_pin_2) {
-        console.log('Prepare to construct the decorated stepper');
+        log.info('Prepare to construct the decorated stepper');
         this.stepper = stepper;
         this.enable_pin = enable_pin;
         this.stop_pin_1 = stop_pin_1;
@@ -14,7 +25,7 @@ class StepperDecorated {
         this.status = stepper_status.NORMAL_STOP;
         this.status_emitter = new events.EventEmitter();
 
-        console.log('Construct the decorated stepper done, info');
+        log.info('Construct the decorated stepper done, info');
 
         this.stop(); // stop when constructor finished
     }
@@ -29,19 +40,19 @@ class StepperDecorated {
      */
     stop(emitter_status = stepper_status.NORMAL_STOP) { // default status is NORMAL_STOP
         var that = this;
-        console.log("STOP BY STATUS: ", emitter_status.key);
+        log.info("STOP BY STATUS: ", emitter_status.key);
         that.status = emitter_status;
 
         that.stepper.rpm(180).ccw().step(1, function() {
             that.stepper.cw().step(1, function() {
-                console.log("Done moving CCW AND CW to make a stop");
+                log.info("Done moving CCW AND CW to make a stop");
                 that.enable_pin.high();
             });
         });
     }
 
     trigger_stop_by_limit(stop_pin_num) {
-        console.log("STOP BY LIMIT, STOP_PIN: ", stop_pin_num);
+        log.info("STOP BY LIMIT, STOP_PIN: ", stop_pin_num);
         this.status_emitter.emit('limit_stop_emitter');
     }
 
@@ -57,7 +68,7 @@ class StepperDecorated {
         steps = Math.abs(steps);
 
         this.stepper.rpm(180).direction(direction).accel(1000).decel(1000).step(steps, function() {
-            console.log("Done moving");
+            log.info("Done moving");
             this.stop();
         });
     }
@@ -67,7 +78,7 @@ class StepperDecorated {
         var that = this;
         let status = await this.promise_move_resolve_status(steps);
         that.stop(status);
-        console.log("Done moving, now status: ", that.status.key);
+        log.info("Done moving, now status: ", that.status.key);
         return status;
     };
 
