@@ -14,18 +14,19 @@ var log = bunyan.createLogger({
 
 
 class StepperDecorated {
-    constructor(stepper, enable_pin, stop_pin_1, stop_pin_2) {
-        log.info('Prepare to construct the decorated stepper');
+    constructor(stepper, enable_pin, stop_pin_1, stop_pin_2, stepper_name='default_stepper') {
+        log.info('Prepare to construct the decorated stepper, ', stepper_name);
         this.stepper = stepper;
         this.enable_pin = enable_pin;
         this.stop_pin_1 = stop_pin_1;
         this.stop_pin_2 = stop_pin_2;
+        this.stepper_name = stepper_name;
         
         // we use status and one status_emitter to return RUNNING status after one success movement or a out-of-limit one.
         this.status = stepper_status.NORMAL_STOP;
         this.status_emitter = new events.EventEmitter();
 
-        log.info('Construct the decorated stepper done, info');
+        log.info('Construct the decorated stepper %s done.', this.stepper_name);
 
         this.stop(); // stop when constructor finished
     }
@@ -45,21 +46,21 @@ class StepperDecorated {
 
         that.stepper.rpm(180).ccw().step(1, function() {
             that.stepper.cw().step(1, function() {
-                log.info("Done moving CCW AND CW to make a stop");
+                log.info("%s Done moving CCW AND CW to make a stop.", that.stepper_name);
                 that.enable_pin.high();
             });
         });
-    }
+    };
 
     trigger_stop_by_limit(stop_pin_num) {
-        log.info("STOP BY LIMIT, STOP_PIN: ", stop_pin_num);
+        log.info("%s, STOP BY LIMIT, STOP_PIN: ", this.stepper_name, stop_pin_num);
         this.status_emitter.emit('limit_stop_emitter');
-    }
+    };
 
     start() {
         this.status = stepper_status.RUNNING;
         this.enable_pin.low();
-    }
+    };
 
     move(steps) {
         this.start(); // start first
@@ -68,24 +69,24 @@ class StepperDecorated {
         steps = Math.abs(steps);
 
         this.stepper.rpm(180).direction(direction).accel(1000).decel(1000).step(steps, function() {
-            log.info("Done moving");
+            log.info("%s, Done moving", this.stepper_name);
             this.stop();
         });
-    }
+    };
 
 
     async async_move(steps) {
         var that = this;
-        let status = await this.promise_move_resolve_status(steps);
+        let status = await this._promise_move_resolve_status(steps);
         that.stop(status);
-        log.info("Done moving, now status: ", that.status.key);
+        log.info("%s, Done moving, now status: ", this.stepper_name, that.status.key);
         return status;
     };
 
     promise_move(steps) {
         var that = this;
         return new Promise((resolve, reject) => {
-            this.promise_move_resolve_status(steps)
+            this._promise_move_resolve_status(steps)
             .then(status => {
                 that.stop(status);
                 resolve(status);
@@ -94,7 +95,7 @@ class StepperDecorated {
     };
 
 
-    promise_move_resolve_status(steps) {
+    _promise_move_resolve_status(steps) {
         var that = this;
         
         that.start(); // start first
@@ -114,7 +115,6 @@ class StepperDecorated {
 
         });
     };
-
 }
 
 module.exports = StepperDecorated;
